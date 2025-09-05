@@ -1,0 +1,22 @@
+import 'package:flutter/material.dart';
+
+class SavedRecipePage extends StatelessWidget {
+  const SavedRecipePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false, // Hides drawer icon
+        title: const Text("Saved Recipes"),
+        backgroundColor: Colors.red,
+      ),
+      body: const Center(
+        child: Text(
+          "Your saved recipes will appear here.",
+          style: TextStyle(fontSize: 18),
+        ),
+      ),
+    );
+  }
+}
