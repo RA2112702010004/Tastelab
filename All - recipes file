@@ -1,0 +1,73 @@
+All - Recipes files
+import 'package:flutter/material.dart';
+import 'recipe_details_page.dart';
+
+class AllRecipesPage extends StatelessWidget {
+  const AllRecipesPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Empty list of recipes (you can add recipes dynamically)
+    final List<Map<String, dynamic>> recipes = [];
+
+    return Scaffold(
+      backgroundColor: Colors.grey[900],
+      appBar: AppBar(
+        title: const Text('All Recipes'),
+        backgroundColor: Colors.red,
+      ),
+      body: recipes.isEmpty
+          ? const Center(
+              child: Text(
+                'No recipes available.',
+                style: TextStyle(fontSize: 18, color: Colors.white60),
+              ),
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.all(12),
+              itemCount: recipes.length,
+              itemBuilder: (context, index) {
+                final recipe = recipes[index];
+                return Card(
+                  color: Colors.grey[800],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 4,
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.all(10),
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.asset(
+                        recipe['image'] ?? 'assets/default_image.png',
+                        width: 70,
+                        height: 70,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            const Icon(Icons.image_not_supported,
+                                size: 50, color: Colors.white24),
+                      ),
+                    ),
+                    title: Text(
+                      recipe['name'] ?? 'Unknown Recipe',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RecipeDetailsPage(recipe: recipe),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
+    );
+  }
+}
