@@ -1,0 +1,82 @@
+import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+class AboutUsPage extends StatelessWidget {
+  const AboutUsPage({super.key});
+
+  // Function to launch URL
+  void _launchInstagram() async {
+    const url = 'https://www.instagram.com/hungry.cookk?igsh=ZnFmeGxwZjV1dGVo';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[900],
+      appBar: AppBar(
+        backgroundColor: Colors.deepOrange,
+        title: const Text("About Us"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Welcome to TasteLab AI!",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              "TasteLab AI is your go-to cooking assistant that provides AI-powered recipe suggestions, meal planning, and much more! We aim to bring the best culinary experiences right to your kitchen.",
+              style: TextStyle(fontSize: 16, color: Colors.white),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              "Our Mission:",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.orange),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              "To help people cook smarter, eat healthier, and explore new recipes with the help of AI-powered suggestions and our chefs' exclusive recipes.",
+              style: TextStyle(fontSize: 16, color: Colors.white),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              "Contact Us:",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.orange),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              "For any questions, feedback, or suggestions, feel free to reach out to us:",
+              style: TextStyle(fontSize: 16, color: Colors.white),
+            ),
+            const SizedBox(height: 12),
+            GestureDetector(
+              onTap: _launchInstagram,
+              child: Row(
+                children: const [
+                  Icon(Icons.link, color: Colors.deepOrange),
+                  SizedBox(width: 8),
+                  Text(
+                    "@hungry.cookk (Instagram)",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.deepOrange,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
