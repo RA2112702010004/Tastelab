@@ -1,0 +1,26 @@
+import 'package:flutter/material.dart';
+
+class CartPage extends StatelessWidget {
+  const CartPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[900], // Updated background color
+      appBar: AppBar(
+        title: const Text("My Cart"),
+        backgroundColor: Colors.deepOrange,
+      ),
+      body: const Center(
+        child: Text(
+          "feature under construction. Launching soon!",
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.white, // Text color updated for better contrast
+          ),
+        ),
+      ),
+    );
+  }
+}
