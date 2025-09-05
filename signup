@@ -1,0 +1,126 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'login.dart';
+
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
+
+  @override
+  _SignUpScreenState createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  bool isLoading = false;
+  bool agreeToTerms = false;
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  void signUp() async {
+    if (!agreeToTerms) {
+      Get.snackbar("Error", "You must agree to the Terms and Conditions.",
+          backgroundColor: Colors.redAccent, colorText: Colors.white);
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      await _auth.createUserWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+
+      Get.snackbar("Success", "Account created successfully!",
+          backgroundColor: Colors.green, colorText: Colors.white);
+      Get.to(() => LoginScreen());
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        Get.snackbar(
+          "User Exists",
+          "An account with this email already exists.",
+          backgroundColor: Colors.orange,
+          colorText: Colors.white,
+        );
+      } else {
+        Get.snackbar("Sign Up Failed", e.message ?? "An error occurred",
+            backgroundColor: Colors.redAccent, colorText: Colors.white);
+      }
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF2E514B), // Dark teal background
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const Text(
+                  "Create Account",
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                _buildTextField(controller: nameController, label: "Name", icon: Icons.person),
+                _buildTextField(controller: emailController, label: "Email", icon: Icons.email),
+                _buildTextField(controller: passwordController, label: "Password", icon: Icons.lock, obscureText: true),
+
+                const SizedBox(height: 15),
+
+                Row(
+                  children: [
+                    Checkbox(
+                      value: agreeToTerms,
+                      activeColor: const Color(0xFF4BAE9A),
+                      onChanged: (value) {
+                        setState(() {
+                          agreeToTerms = value ?? false;
+                        });
+                      },
+                    ),
+                    const Text("Agree with ", style: TextStyle(color: Colors.white)),
+                    GestureDetector(
+                      onTap: () {},
+                      child: const Text(
+                        "Terms and Conditions",
+                        style: TextStyle(
+                          color: Colors.orangeAccent,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 15),
+
+                isLoading
+                    ? const CircularProgressIndicator(color: Color(0xFF4BAE9A))
+                    : ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF4BAE9A), // Match with LoadPage
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
+                        ),
+                        onPressed: signUp,
+                        child: const Text("Sign Up", style: TextStyle(color: Colors.white, fontSize: 16)),
+                      ),
