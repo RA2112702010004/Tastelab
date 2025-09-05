@@ -1,0 +1,270 @@
+import 'package:flutter/material.dart';
+import 'random_recipe_page.dart';
+
+class SearchFile extends StatefulWidget {
+  const SearchFile({super.key});
+
+  @override
+  _SearchFileState createState() => _SearchFileState();
+}
+
+class _SearchFileState extends State<SearchFile> {
+  int _selectedBudgetIndex = 0;
+
+  final List<Map<String, dynamic>> budgetRanges = [
+    {'label': '₹0 - ₹100', 'min': 0, 'max': 100},
+    {'label': '₹100 - ₹300', 'min': 100, 'max': 300},
+    {'label': '₹300 - ₹500', 'min': 300, 'max': 500},
+    {'label': '₹500 - ₹700', 'min': 500, 'max': 700},
+    {'label': '₹700 - ₹1000', 'min': 700, 'max': 1000},
+  ];
+
+  final List<Map<String, dynamic>> allRecipes = [
+    {
+      'name': 'Chicken Mandi',
+      'budget': 250,
+      'image': 'android/app/src/main/assets/chickenmandi.png',
+      'ingredients': '''• 400g chicken (cut into pieces)
+• 1 cup basmati rice
+• 1 onion (finely chopped)
+• 1 tomato (chopped)
+• 1 tsp mandi spice mix
+• 1 tbsp ghee (clarified butter)
+• Salt to taste
+• 2 cups water
+• Fresh coriander leaves (for garnish)''',
+      'instructions': '''1. Marinate chicken with mandi spice mix and salt. Let it rest for 30 minutes.
+2. In a pot, heat ghee and sauté onions until golden brown. Add chopped tomatoes and cook until soft.
+3. Add the marinated chicken and cook for 5-7 minutes.
+4. Rinse rice in cold water, then add to the pot with 2 cups of water. Stir well.
+5. Cover and simmer for 20-25 minutes or until rice and chicken are cooked.
+6. Garnish with fresh coriander leaves. Serve hot with raita or salad.''',
+    },
+    {
+      'name': 'Paneer Butter Masala',
+      'budget': 120,
+      'image': 'android/app/src/main/assets/paneer butter masala.png',
+      'ingredients': '''• 200g paneer (cubed)
+• 2 tomatoes (pureed)
+• 1 tbsp butter
+• 1/4 cup heavy cream
+• 1 tsp garam masala
+• 1/2 tsp red chili powder
+• 1/2 tsp turmeric powder
+• 1/4 tsp kasuri methi (dried fenugreek leaves)
+• Salt to taste
+• Fresh coriander leaves (for garnish)''',
+      'instructions': '''1. Heat butter in a pan, add tomato puree, and cook for 5 minutes until oil separates.
+2. Add red chili powder, turmeric powder, and garam masala. Cook for 2 minutes.
+3. Add cubed paneer and mix gently. Simmer for 5 minutes.
+4. Stir in heavy cream and kasuri methi. Cook for 2-3 minutes.
+5. Garnish with fresh coriander leaves. Serve with naan or rice.''',
+    },
+    {
+      'name': 'Chicken Meatball Curry',
+      'budget': 350,
+      'image': 'android/app/src/main/assets/meatball.png',
+      'ingredients': '''• 300g minced chicken
+• 1 egg
+• 2 tbsp breadcrumbs
+• 1 onion (finely chopped)
+• 2 tomatoes (pureed)
+• 1/2 tsp cumin seeds
+• 1 tsp ginger-garlic paste
+• 1 tsp garam masala
+• 1/2 tsp chili powder
+• 1/2 tsp turmeric powder
+• Salt to taste
+• Fresh coriander leaves (for garnish)
+• Oil for frying''',
+      'instructions': '''1. Mix minced chicken, egg, breadcrumbs, and salt. Shape into small meatballs.
+2. Fry meatballs in oil until golden brown. Set aside.
+3. In the same pan, heat oil, add cumin seeds, then onions. Sauté until golden.
+4. Add ginger-garlic paste, cook for 2 minutes, then add tomato puree and cook for 5 minutes.
+5. Add chili powder, turmeric powder, and garam masala. Cook for 2 minutes.
+6. Add fried meatballs, pour enough water to cover them. Simmer for 15-20 minutes.
+7. Garnish with fresh coriander leaves. Serve with rice or roti.''',
+    },
+    {
+      'name': 'Pasta Salad',
+      'budget': 500,
+      'image': 'android/app/src/main/assets/pastasalad.png',
+      'ingredients': '''• 1 cup pasta (any type)
+• 1/2 cup bell peppers (chopped)
+• 1/4 cup sweet corn
+• 2 tbsp mayonnaise
+• 1 tsp mustard sauce
+• Salt and pepper to taste
+• 1 tbsp olive oil
+• Fresh herbs (oregano, basil)''',
+      'instructions': '''1. Cook pasta in salted water as per package instructions. Drain and set aside.
+2. In a large bowl, combine pasta, bell peppers, and sweet corn.
+3. In a small bowl, mix mayonnaise, mustard sauce, olive oil, salt, and pepper to make the dressing.
+4. Toss the pasta mixture with the dressing.
+5. Chill for 30 minutes to allow the flavors to blend.
+6. Garnish with fresh herbs before serving.
+7. Serve cold as a side dish or light meal.''',
+    },
+    {
+      'name': 'Mint Lime Cooler',
+      'budget': 80,
+      'image': 'android/app/src/main/assets/mintlime.png',
+      'ingredients': '''• 1/2 cup fresh mint leaves
+• 1 lime (juiced)
+• 2 tbsp sugar
+• 2 cups soda water or chilled water
+• Ice cubes
+• Salt (optional)''',
+      'instructions': '''1. Blend mint leaves, lime juice, and sugar until smooth.
+2. Strain the mixture into a glass to remove pulp.
+3. Add soda water and stir well.
+4. Add ice cubes and a pinch of salt (optional).
+5. Garnish with mint sprigs or lime slices.
+6. Serve chilled.''',
+    },
+    {
+      'name': 'Kunafa',
+      'budget': 750,
+      'image': 'android/app/src/main/assets/kunafa.png',
+      'ingredients': '''• 100g vermicelli (or shredded pastry)
+• 100g mozzarella cheese (or cream cheese)
+• 2 tbsp butter
+• 1/4 cup sugar syrup
+• 1/2 tsp rose water (optional)
+• Crushed pistachios (for garnish)''',
+      'instructions': '''1. Preheat oven to 180°C (350°F).
+2. Melt butter and mix with vermicelli. Layer half in a baking dish.
+3. Spread cheese over the vermicelli layer.
+4. Top with the remaining vermicelli, pressing down gently.
+5. Bake for 25-30 minutes or until golden brown.
+6. Remove from oven and pour sugar syrup over the hot kunafa.
+7. Let it absorb the syrup for 5 minutes.
+8. Garnish with crushed pistachios. Serve warm.''',
+    },
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    var selectedBudget = budgetRanges[_selectedBudgetIndex];
+    int minBudget = selectedBudget['min'];
+    int maxBudget = selectedBudget['max'];
+
+    List<Map<String, dynamic>> filteredRecipes = allRecipes.where((recipe) {
+      int budget = recipe['budget'] ?? 0;
+      return budget >= minBudget && budget <= maxBudget;
+    }).toList();
+
+    return Scaffold(
+      backgroundColor: Colors.grey[900],
+      appBar: PreferredSize(
+        preferredSize: Size.zero,
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Center(
+              child: ClipOval(
+                child: Image.asset(
+                  "android/app/src/main/assets/budget.png",
+                  height: 200,
+                  width: 200,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(budgetRanges.length, (index) {
+                  bool isSelected = index == _selectedBudgetIndex;
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedBudgetIndex = index;
+                      });
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 6),
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+                      decoration: BoxDecoration(
+                        color: isSelected ? Colors.orangeAccent : Colors.grey[800],
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.white, width: 1),
+                      ),
+                      child: Text(
+                        budgetRanges[index]['label'],
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: isSelected ? Colors.black : Colors.white,
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Expanded(
+              child: filteredRecipes.isEmpty
+                  ? const Center(
+                      child: Text(
+                        "No recipes found in this budget range!",
+                        style: TextStyle(fontSize: 18, color: Colors.white70),
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: filteredRecipes.length,
+                      itemBuilder: (context, index) {
+                        final recipe = filteredRecipes[index];
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[800],
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: ListTile(
+                            contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                            leading: ClipOval(
+                              child: Image.asset(
+                                recipe['image'],
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+),
+),
+title: Text(
+recipe['name'],
+style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+),
+subtitle: Text(
+"Budget: ₹${recipe['budget']}",
+style: const TextStyle(color: Colors.orangeAccent),
+),
+onTap: () {
+Navigator.push(
+context,
+MaterialPageRoute(
+builder: (context) => RandomRecipePage(recipe: recipe),
+),
+);
+},
+),
+);
+},
+),
+),
+],
+),
+),
+);
+}
+}
