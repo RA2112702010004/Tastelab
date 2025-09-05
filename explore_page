@@ -1,0 +1,109 @@
+import 'package:flutter/material.dart';
+import 'dart:math';
+
+class ExploreMorePage extends StatefulWidget {
+  const ExploreMorePage({super.key});
+
+  @override
+  _ExploreMorePageState createState() => _ExploreMorePageState();
+}
+
+class _ExploreMorePageState extends State<ExploreMorePage> {
+  final List<String> tips = [
+    "Whole Foods, Whole Health! Choose whole foods over processed options for a healthier lifestyle.",
+    "Color Your Plate! Fill your plate with a variety of colorful fruits and vegetables for a nutrient boost.",
+    "Hydration is Vital! Drink water throughout the day to stay hydrated and support your body’s functions.",
+    "Healthy Fats for a Healthy Heart! Include healthy fats like avocado, olive oil, and nuts in your diet.",
+    "Cut the Sugar, Not the Taste! Reduce added sugars and opt for natural sweetness from fruits.",
+    "Fiber-Fuel Your Body! Eat fiber-rich foods like whole grains and vegetables to support digestion.",
+    "Protein Power! Choose lean protein sources like chicken, fish, and legumes for muscle and energy.",
+    "Portion Control, Not Deprivation! Keep portions in check to avoid overeating and maintain a healthy weight.",
+    "Prep in Advance, Eat with Ease! Meal prep to save time and make healthy eating choices easier.",
+    "Go Green, Eat More Plants! Include more plant-based meals like salads and veggie stir-fries in your diet.",
+    "Eat the Rainbow! Include a variety of colorful fruits and vegetables in your diet for diverse nutrients.",
+    "Drink Herbal Teas! Swap sugary drinks with herbal teas for a natural antioxidant boost.",
+    "Stay Active! Aim for at least 30 minutes of physical activity most days of the week to boost health.",
+    "Avoid Late-Night Snacking! Try to avoid eating too late to help with digestion and better sleep.",
+    "Mindful Eating! Practice mindfulness by eating slowly and savoring each bite to help with digestion.",
+    "Snack Wisely! Choose healthy snacks like nuts, fruits, or yogurt instead of processed snacks.",
+    "Limit Red Meat! Opt for lean meats, poultry, or plant-based protein sources for better heart health.",
+    "Cook at Home! Prepare meals at home to control ingredients and make healthier choices.",
+    "Eat Seasonal Produce! Choose fruits and vegetables that are in season for better taste and nutrition.",
+    "Boost Immune System with Vitamin C! Include citrus fruits, bell peppers, and broccoli to strengthen immunity.",
+    "Limit Processed Foods! Reduce intake of packaged foods, as they often contain hidden sugars and unhealthy fats.",
+    "Stay Consistent with Meals! Eating regular meals keeps your energy stable and prevents overeating later.",
+    "Add Probiotics to Your Diet! Include yogurt, kefir, or fermented foods to support gut health.",
+    "Choose Healthy Cooking Oils! Use olive oil or avocado oil instead of vegetable oils for healthier fats.",
+    "Eat Smaller, More Frequent Meals! Eating smaller meals throughout the day can keep energy levels steady.",
+    "Avoid Refined Carbs! Choose whole grains like brown rice and quinoa over refined carbs like white bread.",
+    "Cook with Herbs and Spices! Enhance flavor and nutritional value by adding fresh herbs and spices to meals.",
+    "Limit Salt Intake! Reduce sodium in your diet to lower blood pressure and improve heart health.",
+    "Take a Probiotic Supplement! Consider adding a probiotic supplement to support gut health, especially if you have digestive issues.",
+    "Practice Portion Control! Keep portions in check to avoid overeating, even with healthy foods.",
+  ];
+
+  String currentTip = "Spin the wheel to get a healthy tip!";
+  double spinAngle = 0;
+  double maxAngle = pi * 2; // One full rotation
+  Random random = Random();
+
+  void spinWheel() {
+    setState(() {
+      spinAngle = random.nextDouble() * maxAngle; // Generate a random spin angle
+      int index = random.nextInt(tips.length); // Select a random tip
+      currentTip = tips[index]; // Update the tip
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Explore More"),
+        backgroundColor: Colors.deepOrange,
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Spinning wheel
+            GestureDetector(
+              onTap: spinWheel,
+              child: AnimatedRotation(
+                turns: spinAngle / maxAngle, // Rotation animation
+                duration: Duration(seconds: 2), // Animation duration
+                child: Container(
+                  height: 150,
+                  width: 150,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.deepOrange, width: 8),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      Icons.refresh,
+                      size: 60,
+                      color: Colors.deepOrange,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 30),
+            // Display the selected tip
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Text(
+                currentTip,
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                textAlign: TextAlign.center, // Properly aligned text
+              ),
+            ),
+          ],
+        ),
+      ),
+      backgroundColor: Colors.grey[850], // Background color set to grey
+    );
+  }
+}
