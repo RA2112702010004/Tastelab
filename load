@@ -1,0 +1,241 @@
+import 'package:flutter/material.dart';
+import 'dart:math';
+import 'dart:ui';
+import 'signup.dart';
+
+class LoadPage extends StatefulWidget {
+  const LoadPage({super.key});
+
+  @override
+  _LoadPageState createState() => _LoadPageState();
+}
+
+class _LoadPageState extends State<LoadPage> with TickerProviderStateMixin {
+  final List<String> _greenFoodEmojis = [
+    '🥬', '🥒', '🥦', '🥑', '🍏', '🍐', '🫛', '🫑', '🫒', '🌿', '🧄', '🧅',
+  ];
+
+  final Random _random = Random();
+  final List<_EmojiBubble> _emojiBubbles = [];
+
+  late AnimationController _glowController;
+
+  void _addEmojiBubble(TapDownDetails details) {
+    final emoji = _greenFoodEmojis[_random.nextInt(_greenFoodEmojis.length)];
+    final double left = details.globalPosition.dx;
+    final double bottom = MediaQuery.of(context).size.height - details.globalPosition.dy;
+
+    final controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    )..forward();
+
+    final bubble = _EmojiBubble(
+      emoji: emoji,
+      left: left,
+      bottom: bottom,
+      controller: controller,
+    );
+
+    setState(() {
+      _emojiBubbles.add(bubble);
+    });
+
+    controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        controller.dispose();
+        setState(() {
+          _emojiBubbles.remove(bubble);
+        });
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _glowController = AnimationController(
+      duration: const Duration(seconds: 5),
+      vsync: this,
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    for (var bubble in _emojiBubbles) {
+      bubble.controller.dispose();
+    }
+    _glowController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: GestureDetector(
+        onTapDown: _addEmojiBubble,
+        child: Stack(
+          children: [
+            SizedBox.expand(
+              child: Image.asset(
+                'android/app/src/main/assets/background.png',
+                fit: BoxFit.cover,
+              ),
+            ),
+
+            ..._emojiBubbles,
+
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(32),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Glowing Logo with light rays
+                    AnimatedBuilder(
+                      animation: _glowController,
+                      builder: (context, child) {
+                        final scale = 1.0 + (_glowController.value * 0.1);
+                        return Transform.scale(
+                          scale: scale,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              // Radiating glow background
+                              Container(
+                                width: 260,
+                                height: 260,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  gradient: RadialGradient(
+                                    colors: [
+                                      Colors.yellow.withOpacity(0.35),
+                                      Colors.transparent,
+                                    ],
+                                    radius: 0.9,
+                                  ),
+                                ),
+                              ),
+                              // Logo container
+                              Container(
+                                padding: const EdgeInsets.all(24),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFFAE9B1),
+                                  borderRadius: BorderRadius.circular(30),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.yellow.withOpacity(0.6),
+                                      blurRadius: 80,
+                                      spreadRadius: 40,
+                                    ),
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.3),
+                                      blurRadius: 12,
+                                      offset: const Offset(0, 6),
+                                    ),
+                                  ],
+                                ),
+                                child: Image.asset(
+                                  'android/app/src/main/assets/load.png',
+                                  width: 120,
+                                  height: 120,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+
+                    const SizedBox(height: 40),
+
+                    // Get Started Button with Glow
+                    Container(
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.greenAccent.withOpacity(0.7),
+                            blurRadius: 30,
+                            spreadRadius: 5,
+                          ),
+                        ],
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const SignUpScreen()),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: const Color(0xFF4BAE9A),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                          textStyle: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          elevation: 0,
+                        ),
+                        child: const Text('Get Started'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _EmojiBubble extends StatelessWidget {
+  final String emoji;
+  final double left;
+  final double bottom;
+  final AnimationController controller;
+
+  const _EmojiBubble({
+    required this.emoji,
+    required this.left,
+    required this.bottom,
+    required this.controller,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final offsetAnimation = Tween<Offset>(
+      begin: const Offset(0, 0),
+      end: const Offset(0, -1.8),
+    ).animate(CurvedAnimation(parent: controller, curve: Curves.easeOut));
+
+    final opacityAnimation = Tween<double>(begin: 1, end: 0).animate(controller);
+    final scaleAnimation = Tween<double>(begin: 0.8, end: 1.6).animate(
+      CurvedAnimation(parent: controller, curve: Curves.elasticOut),
+    );
+
+    return Positioned(
+      left: left,
+      bottom: bottom,
+      child: SlideTransition(
+        position: offsetAnimation,
+        child: FadeTransition(
+          opacity: opacityAnimation,
+          child: ScaleTransition(
+            scale: scaleAnimation,
+            child: Text(
+              emoji,
+              style: const TextStyle(fontSize: 40),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
