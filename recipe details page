@@ -1,0 +1,122 @@
+import 'package:flutter/material.dart';
+
+class RecipeDetailsPage extends StatelessWidget {
+  final Map<String, dynamic> recipe;
+
+  const RecipeDetailsPage({super.key, required this.recipe});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[900],
+      appBar: AppBar(
+        title: Text(recipe['name'] ?? 'Recipe'),
+        backgroundColor: Colors.red,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Recipe Image
+              Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.asset(
+                    recipe['image'] ?? 'assets/default_image.png', 
+                    width: 300,
+                    height: 200,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => const Icon(
+                      Icons.image_not_supported,
+                      size: 100,
+                      color: Colors.white24,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Recipe Name
+              Text(
+                recipe['name'] ?? 'Recipe Name',
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 10),
+
+              // Ingredients
+              const Text(
+                "Ingredients:",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.orange),
+              ),
+              const SizedBox(height: 5),
+              if (recipe.containsKey('ingredients') && recipe['ingredients'] is List)
+                ...recipe['ingredients'].map<Widget>((ingredient) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2),
+                      child: Text(
+                        "• $ingredient",
+                        style: const TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+                    )).toList()
+              else
+                const Text(
+                  "No ingredients available.",
+                  style: TextStyle(fontSize: 16, color: Colors.white70),
+                ),
+              const SizedBox(height: 20),
+
+              // Instructions
+              const Text(
+                "Instructions:",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.orange),
+              ),
+              const SizedBox(height: 5),
+              if (recipe.containsKey('instructions') && recipe['instructions'] is List)
+                ...recipe['instructions'].asMap().entries.map<Widget>((entry) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2),
+                      child: Text(
+                        "${entry.key + 1}. ${entry.value}",
+                        style: const TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+                    )).toList()
+              else
+                const Text(
+                  "No instructions available.",
+                  style: TextStyle(fontSize: 16, color: Colors.white70),
+                ),
+              const SizedBox(height: 20),
+
+              // Nutritional Values
+              const Text(
+                "Nutritional Value (Per Serving):",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.orange),
+              ),
+              const SizedBox(height: 5),
+              if (recipe['nutrition'] != null)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: (recipe['nutrition'] as Map<String, String>).entries.map((entry) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        child: Text(
+                          "${entry.key}: ${entry.value}",
+                          style: const TextStyle(fontSize: 16, color: Colors.white),
+                        ),
+                      )).toList(),
+                )
+              else
+                const Text(
+                  "No nutritional information available.",
+                  style: TextStyle(fontSize: 16, color: Colors.white70),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
